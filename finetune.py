@@ -1,37 +1,49 @@
-"""Script to finetune AlexNet using Tensorflow.
+"""
+Script to finetune AlexNet using Tensorflow.
 
-With this script you can finetune AlexNet as provided in the alexnet.py
-class on any given dataset. Specify the configuration settings at the
-beginning according to your problem.
-This script was written for TensorFlow >= version 1.2rc0 and comes with a blog
-post, which you can find here:
+With this script you can finetune AlexNet as provided in the alexnet.py class on any given dataset. Specify 
+the configuration settings at the beginning according to your problem.
 
+This script was written for TensorFlow >= version 1.2rc0 and comes with a blog post, which you can find here:
 https://kratzert.github.io/2017/02/24/finetuning-alexnet-with-tensorflow.html
 
 Author: Frederik Kratzert
 contact: f.kratzert(at)gmail.com
+
+Editor: Mike Chen
+
+Make many changes to adapt to TensorFlow 2.2. Add the mission-critical code to avoid the errors incurred by 
+the original code with TensorFlow 1.2. Set up GPU growth to adapt to large computing for both training and 
+validating. 
 """
+
 
 import os
-
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.compat.v1.disable_eager_execution()
 
 from alexnet import AlexNet
+from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout
 from datagenerator import ImageDataGenerator
 from datetime import datetime
-from tensorflow.contrib.data import Iterator
+from tensorflow.python.data.util import nest
 
-"""
-Configuration Part.
-"""
+# Set up the GPU in the condition of allocation exceeds system memory with the reminding message: Could not 
+# create cuDNN handle... The following lines of code can avoids the sudden stop of the runtime. 
+gpus = tf.config.experimental.list_physical_devices('GPU')
+for gpu in gpus:
+    tf.config.experimental.set_memory_growth(gpu, True)
+
+
+# 1.Configuration
 
 # Path to the textfiles for the trainings and validation set
-train_file = '/path/to/train.txt'
-val_file = '/path/to/val.txt'
+train_file = '/home/mic/Documents/finetune_alexnet_with_tf/train.txt'
+val_file = '/home/mic/Documents/finetune_alexnet_with_tf/val.txt'
 
-# Learning params
-learning_rate = 0.01
+# Change the learning rate from 0.01 to 0.001 to erase the runtime error. 
+learning_rate = 0.001
 num_epochs = 10
 batch_size = 128
 
@@ -44,12 +56,11 @@ train_layers = ['fc8', 'fc7', 'fc6']
 display_step = 20
 
 # Path for tf.summary.FileWriter and to store model checkpoints
-filewriter_path = "/tmp/finetune_alexnet/tensorboard"
-checkpoint_path = "/tmp/finetune_alexnet/checkpoints"
+filewriter_path = '/home/mic/Documents/finetune_alexnet_with_tf/dogs_vs_cats'
+checkpoint_path = '/home/mic/Documents/finetune_alexnet_with_tf/'
 
-"""
-Main Part of the finetuning Script.
-"""
+
+# 2.Finetuning Script.
 
 # Create parent path if it doesn't exist
 if not os.path.isdir(checkpoint_path):
@@ -67,10 +78,8 @@ with tf.device('/cpu:0'):
                                   batch_size=batch_size,
                                   num_classes=num_classes,
                                   shuffle=False)
-
-    # create an reinitializable iterator given the dataset structure
-    iterator = Iterator.from_structure(tr_data.data.output_types,
-                                       tr_data.data.output_shapes)
+    iterator = tf.compat.v1.data.Iterator.from_structure(tr_data.data.output_types,
+                                                         tr_data.data.output_shapes)
     next_batch = iterator.get_next()
 
 # Ops for initializing the two different iterators
@@ -78,9 +87,9 @@ training_init_op = iterator.make_initializer(tr_data.data)
 validation_init_op = iterator.make_initializer(val_data.data)
 
 # TF placeholder for graph input and output
-x = tf.placeholder(tf.float32, [batch_size, 227, 227, 3])
-y = tf.placeholder(tf.float32, [batch_size, num_classes])
-keep_prob = tf.placeholder(tf.float32)
+x = tf.compat.v1.placeholder(tf.float32, [batch_size, 227, 227, 3])
+y = tf.compat.v1.placeholder(tf.float32, [batch_size, num_classes])
+keep_prob = tf.compat.v1.placeholder(tf.float32)
 
 # Initialize model
 model = AlexNet(x, keep_prob, num_classes, train_layers)
@@ -89,19 +98,18 @@ model = AlexNet(x, keep_prob, num_classes, train_layers)
 score = model.fc8
 
 # List of trainable variables of the layers we want to train
-var_list = [v for v in tf.trainable_variables() if v.name.split('/')[0] in train_layers]
+var_list = [v for v in tf.compat.v1.trainable_variables() if v.name.split('/')[0] in train_layers]
 
-# Op for calculating the loss
-with tf.name_scope("cross_ent"):
-    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=score,
-                                                                  labels=y))
+# Op for calculating the loss. Please consider casting elements to a supported type.
+with tf.compat.v1.name_scope("cross_ent"):
+    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=score, labels=y))
 
-# Train op
-with tf.name_scope("train"):
+
+# 3.Train op
+with tf.compat.v1.name_scope("train"):
     # Get gradients of all trainable variables
     gradients = tf.gradients(loss, var_list)
     gradients = list(zip(gradients, var_list))
-
     # Create optimizer and apply gradient descent to the trainable variables
     optimizer = tf.train.GradientDescentOptimizer(learning_rate)
     train_op = optimizer.apply_gradients(grads_and_vars=gradients)
@@ -118,8 +126,8 @@ for var in var_list:
 tf.summary.scalar('cross_entropy', loss)
 
 
-# Evaluation op: Accuracy of the model
-with tf.name_scope("accuracy"):
+# 4.Evaluation op: Accuracy of the model
+with tf.compat.v1.name_scope("accuracy"):
     correct_pred = tf.equal(tf.argmax(score, 1), tf.argmax(y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
@@ -136,58 +144,46 @@ writer = tf.summary.FileWriter(filewriter_path)
 saver = tf.train.Saver()
 
 # Get the number of training/validation steps per epoch
-train_batches_per_epoch = int(np.floor(tr_data.data_size/batch_size))
+train_batches_per_epoch = int(np.floor(tr_data.data_size / batch_size))
 val_batches_per_epoch = int(np.floor(val_data.data_size / batch_size))
 
-# Start Tensorflow session
-with tf.Session() as sess:
 
+# 5.Start Tensorflow session
+with tf.Session() as sess:
     # Initialize all variables
     sess.run(tf.global_variables_initializer())
-
     # Add the model graph to TensorBoard
     writer.add_graph(sess.graph)
-
     # Load the pretrained weights into the non-trainable layer
     model.load_initial_weights(sess)
-
     print("{} Start training...".format(datetime.now()))
     print("{} Open Tensorboard at --logdir {}".format(datetime.now(),
                                                       filewriter_path))
-
     # Loop over number of epochs
     for epoch in range(num_epochs):
-
         print("{} Epoch number: {}".format(datetime.now(), epoch+1))
-
         # Initialize iterator with the training dataset
         sess.run(training_init_op)
-
         for step in range(train_batches_per_epoch):
-
-            # get next batch of data
+            # Get next batch of data
             img_batch, label_batch = sess.run(next_batch)
-
             # And run the training op
             sess.run(train_op, feed_dict={x: img_batch,
                                           y: label_batch,
                                           keep_prob: dropout_rate})
-
             # Generate summary with the current batch of data and write to file
             if step % display_step == 0:
                 s = sess.run(merged_summary, feed_dict={x: img_batch,
                                                         y: label_batch,
                                                         keep_prob: 1.})
-
                 writer.add_summary(s, epoch*train_batches_per_epoch + step)
-
+            
         # Validate the model on the entire validation set
         print("{} Start validation".format(datetime.now()))
         sess.run(validation_init_op)
         test_acc = 0.
         test_count = 0
         for _ in range(val_batches_per_epoch):
-
             img_batch, label_batch = sess.run(next_batch)
             acc = sess.run(accuracy, feed_dict={x: img_batch,
                                                 y: label_batch,
