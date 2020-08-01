@@ -1,0 +1,13 @@
+
+AlexNet implementation + weights in TensorFlow
+
+Users need to download the file of weights for runing finetune.py. It has 
+the size of 244 MiB and need a bit of time to complete the download. It is
+necessary to save it into the main directory. 
+
+bvlc_alexnet.npy -- the weights; they need to be in the working directory
+
+weight: http://www.cs.toronto.edu/~guerzhoy/tf_alexnet/bvlc_alexnet.npy
+weblink: http://www.cs.toronto.edu/~guerzhoy/tf_alexnet/
+
+
