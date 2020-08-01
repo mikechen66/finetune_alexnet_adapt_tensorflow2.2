@@ -4,17 +4,16 @@ Editor: Mike Chen
 
 # Finetune AlextNet to Be Compatible with TensorFlow 2.2 
 
-The editor has modified lines of code to be compaible with the environment of TensorFlow 2.2, CUDA 11.0 and cuDNN 8.0.1 In addition, all the scripts including the modified and new created scripts, has completed the running on the Miniconda 4.8.3. 
-It can show 10 epochs. However, the tensorboard need to be improved for visibility.
+The editor has modified lines of code to be compaible with the environment of TensorFlow 2.2, CUDA 11.0 and cuDNN 8.0.1 In addition, all the scripts including the modified and new created scripts, has completed the running on the Miniconda 4.8.3. It can show 10 epochs. However, the tensorboard need to be improved for visibility.
 
 ## Requirements
 
-Miniconda 4.8.3 (or related Ananconda version) 
-Python 3.7.7
-TensorFlow 2.0 ~ 2.2
-CUDA 11.0
-cuDNN 8.0.1
-TensorFlow 2.0~2.2
+- Miniconda 4.8.3 (or related Ananconda version) 
+- Python 3.7.7
+- TensorFlow 2.0 ~ 2.2
+- CUDA 11.0
+- cuDNN 8.0.1
+- TensorFlow 2.0~2.2
 
 ## New Created Scripts
 
