@@ -1,5 +1,36 @@
 ![](https://zenodo.org/badge/DOI/10.5281/zenodo.1037359.svg)
 
+Editor: Mike Chen
+
+# Finetune AlextNet to Be Compatible with TensorFlow 2.2 
+
+The editor has modified lines of code to be compaible with the environment of TensorFlow 2.2, CUDA 11.0 and cuDNN 8.0.1 In addition, all the scripts including the modified and new created scripts, has completed the running on the Miniconda 4.8.3. 
+It can show 10 epochs. However, the tensorboard need to be improved for visibility.
+
+## Requirements
+
+Miniconda 4.8.3 (or related Ananconda version) 
+Python 3.7.7
+TensorFlow 2.0 ~ 2.2
+CUDA 11.0
+cuDNN 8.0.1
+TensorFlow 2.0~2.2
+
+## New Created Scripts
+
+The original scripts do not inlcude both dataset-splitting and image-labelling functionalities. So it is not east for fresh developers to understand and run the original scripts. Therefore, the editor write both the scripts of dataset-splitting and image-labelling. It streamlines the finetune of the AlexNet model. 
+
+## Example train.txt:
+
+Please notice that cat is labeled with 0 and dog is labeled with 1. Users can assign 0 to dog and 1 to cat. I am pleased to write the full list of images in order to make a explicit explaination to the users. It is quite different from the original format by the author.
+
+/home/mic/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/cat.0.jpg 0
+/home/mic/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/cat.1.jpg 0
+/home/mic/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/dog.4352.jpg 1
+/home/mic/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/dog.4353.jpg 1
+
+
+
 # Finetune AlexNet with Tensorflow
 
 **Update 15.06.2016**
