@@ -1,4 +1,5 @@
-"""This is an TensorFLow implementation of AlexNet by Alex Krizhevsky at all.
+"""
+This is an TensorFLow implementation of AlexNet by Alex Krizhevsky at all.
 
 Paper:
 (http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)
@@ -6,22 +7,26 @@ Paper:
 Explanation can be found in my blog post:
 https://kratzert.github.io/2017/02/24/finetuning-alexnet-with-tensorflow.html
 
-This script enables finetuning AlexNet on any given Dataset with any number of
-classes. The structure of this script is strongly inspired by the fast.ai
-Deep Learning class by Jeremy Howard and Rachel Thomas, especially their vgg16
-finetuning script:
+This script enables finetuning AlexNet on any given Dataset with any number of classes. The structure 
+of this script is strongly inspired by the fast.aiDeep Learning class by Jeremy Howard and Rachel Thomas, 
+especially their vgg16 finetuning script:
 Link:
 - https://github.com/fastai/courses/blob/master/deeplearning1/nbs/vgg16.py
-
 
 The pretrained weights can be downloaded here and should be placed in the same
 folder as this file:
 - http://www.cs.toronto.edu/~guerzhoy/tf_alexnet/
 
 @author: Frederik Kratzert (contact: f.kratzert(at)gmail.com)
+
+Editor: Mike Chen
+
+Make the changes to comply with TensorFlow 2.2. 
 """
 
-import tensorflow as tf
+
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 import numpy as np
 
 
@@ -31,7 +36,6 @@ class AlexNet(object):
     def __init__(self, x, keep_prob, num_classes, skip_layer,
                  weights_path='DEFAULT'):
         """Create the graph of the AlexNet model.
-
         Args:
             x: Placeholder for the input tensor.
             keep_prob: Dropout probability.
@@ -91,14 +95,13 @@ class AlexNet(object):
 
     def load_initial_weights(self, session):
         """Load weights from file into network.
-
         As the weights from http://www.cs.toronto.edu/~guerzhoy/tf_alexnet/
         come as a dict of lists (e.g. weights['conv1'] is a list) and not as
         dict of dicts (e.g. weights['conv1'] is a dict with keys 'weights' &
         'biases') we need a special load function
         """
         # Load the weights into memory
-        weights_dict = np.load(self.WEIGHTS_PATH, encoding='bytes').item()
+        weights_dict = np.load(self.WEIGHTS_PATH, encoding='bytes', allow_pickle=True).item()
 
         # Loop over all layer names stored in the weights dict
         for op_name in weights_dict:
@@ -106,26 +109,25 @@ class AlexNet(object):
             # Check if layer should be trained from scratch
             if op_name not in self.SKIP_LAYER:
 
-                with tf.variable_scope(op_name, reuse=True):
+                with tf.compat.v1.variable_scope(op_name, reuse=True):
 
                     # Assign weights/biases to their corresponding tf variable
                     for data in weights_dict[op_name]:
 
                         # Biases
                         if len(data.shape) == 1:
-                            var = tf.get_variable('biases', trainable=False)
+                            var = tf.compat.v1.get_variable('biases', trainable=False)
                             session.run(var.assign(data))
 
                         # Weights
                         else:
-                            var = tf.get_variable('weights', trainable=False)
+                            var = tf.compat.v1.get_variable('weights', trainable=False)
                             session.run(var.assign(data))
 
 
 def conv(x, filter_height, filter_width, num_filters, stride_y, stride_x, name,
          padding='SAME', groups=1):
     """Create a convolution layer.
-
     Adapted from: https://github.com/ethereon/caffe-tensorflow
     """
     # Get number of input channels
@@ -136,13 +138,13 @@ def conv(x, filter_height, filter_width, num_filters, stride_y, stride_x, name,
                                          strides=[1, stride_y, stride_x, 1],
                                          padding=padding)
 
-    with tf.variable_scope(name) as scope:
+    with tf.compat.v1.variable_scope(name) as scope:
         # Create tf variables for the weights and biases of the conv layer
-        weights = tf.get_variable('weights', shape=[filter_height,
-                                                    filter_width,
-                                                    input_channels/groups,
-                                                    num_filters])
-        biases = tf.get_variable('biases', shape=[num_filters])
+        weights = tf.compat.v1.get_variable('weights', shape=[filter_height,
+                                             filter_width,
+                                             int(input_channels/groups),
+                                             num_filters])
+        biases = tf.compat.v1.get_variable('biases', shape=[num_filters])
 
     if groups == 1:
         conv = convolve(x, weights)
@@ -169,12 +171,12 @@ def conv(x, filter_height, filter_width, num_filters, stride_y, stride_x, name,
 
 def fc(x, num_in, num_out, name, relu=True):
     """Create a fully connected layer."""
-    with tf.variable_scope(name) as scope:
+    with tf.compat.v1.variable_scope(name) as scope:
 
         # Create tf variables for the weights and biases
-        weights = tf.get_variable('weights', shape=[num_in, num_out],
+        weights = tf.compat.v1.get_variable('weights', shape=[num_in, num_out],
                                   trainable=True)
-        biases = tf.get_variable('biases', [num_out], trainable=True)
+        biases = tf.compat.v1.get_variable('biases', [num_out], trainable=True)
 
         # Matrix multiply weights and inputs and add bias
         act = tf.nn.xw_plus_b(x, weights, biases, name=scope.name)
@@ -205,3 +207,5 @@ def lrn(x, radius, alpha, beta, name, bias=1.0):
 def dropout(x, keep_prob):
     """Create a dropout layer."""
     return tf.nn.dropout(x, keep_prob)
+
+    
