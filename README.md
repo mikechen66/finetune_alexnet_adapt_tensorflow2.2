@@ -21,12 +21,12 @@ The original scripts do not inlcude both dataset-splitting and image-labelling f
 
 ## Example train.txt:
 
-Please notice that cat is labeled with 0 and dog is labeled with 1. Users can assign 0 to dog and 1 to cat. I am pleased to write the full list of images in order to make a explicit explaination to the users. It is quite different from the original format by the author.
+Please notice that dog is labeled with 0 and cat is labeled with 1. I am pleased to write the full list of images in order to make a explicit explaination to the users. It is quite different from the original format by the author.
 
-/home/mic/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/cat.0.jpg 0
-/home/mic/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/cat.1.jpg 0
-/home/mic/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/dog.4352.jpg 1
-/home/mic/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/dog.4353.jpg 1
+/home/mike/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/dog.11001.jpg 0
+/home/mike/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/dog.11002.jpg 0
+/home/mike/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/cat.5276.jpg 1
+/home/mike/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/cat.5278.jpg 1
 
 
 
