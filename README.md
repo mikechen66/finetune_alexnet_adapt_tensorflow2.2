@@ -28,6 +28,15 @@ Please notice that dog is labeled with 0 and cat is labeled with 1. I am pleased
 /home/mike/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/cat.5276.jpg 1
 /home/mike/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/cat.5278.jpg 1
 
+## CUPTI 
+
+If users meet the error issue of CUPTI(Nvidia CUDA Profiling Tools Interface), the easiest method is to add "--cap-add=CAP_SYS_ADMIN" in the command. 
+
+$ python3 finetune.py --cap-add=CAP_SYS_ADMIN
+
+According to the current trace report from CUPTI, it is only the reminding message. It reminds users of lacking super user privilege. At the present, it is hard to remove the reminding message. Please take the reference of the CUPTI as follows.
+
+https://docs.nvidia.com/cupti/Cupti/index.html
 
 
 # Finetune AlexNet with Tensorflow
