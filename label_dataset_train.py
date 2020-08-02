@@ -1,10 +1,14 @@
-# labels_datasets_train.py
+# label_dataset_train.py
 
 """
 Mike Chen  
 
 To make users to easily understand how to label the train dataset, I add 
-the new script to be integrated into the finetune. 
+the new script to be integrated into the finetune. Please execute the 
+command as similar as follows. 
+
+cd /home/mike/Documents/finetune_alexnet_with_tf
+$ python label_dataset_train.py
 """
 
 import os
@@ -28,11 +32,11 @@ def generate(dir):
             continue
         # Label iamges if it is else. 
         else: 
-            # cat is labeled with 0 
-            if 'cat' in file:
+            # dog is labeled with 0 
+            if 'dog' in file:
                 label=0
-            # dog is labeled with 1
-            elif 'dog' in file:
+            # cat is labeled with 1
+            elif 'cat' in file:
                 label=1
             else:
                 print("error")
@@ -44,7 +48,7 @@ def generate(dir):
     listText.close()
 
 # Path of the val images
-outer_path = '/home/mic/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/'
+outer_path = '/home/mike/Documents/finetune_alexnet_with_tf/dogs_vs_cats/train/'
 
 # Call the generate function  
 generate(outer_path)
