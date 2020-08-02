@@ -17,14 +17,15 @@ IMAGENET_MEAN = tf.constant([123.68, 116.779, 103.939], dtype=tf.float32)
 
 
 class ImageDataGenerator(object):
-    """Wrapper class around the new Tensorflows dataset pipeline.
-
+    """
+    Wrapper class around the new Tensorflows dataset pipeline.
     Requires Tensorflow >= version 1.12rc0
     """
 
     def __init__(self, txt_file, mode, batch_size, num_classes, shuffle=True,
                  buffer_size=1000):
-        """Create a new ImageDataGenerator.
+        """
+        Create a new ImageDataGenerator.
 
         Recieves a path string to a text file, which consists of many lines,
         where each line has first a path string to an image and seperated by
@@ -91,6 +92,7 @@ class ImageDataGenerator(object):
 
         self.data = data
 
+
     def _read_txt_file(self):
         """Read the content of the text file and store it into lists."""
         self.img_paths = []
@@ -102,6 +104,7 @@ class ImageDataGenerator(object):
                 self.img_paths.append(items[0])
                 self.labels.append(int(items[1]))
 
+
     def _shuffle_lists(self):
         """Conjoined shuffling of the list of paths and labels."""
         path = self.img_paths
@@ -112,6 +115,7 @@ class ImageDataGenerator(object):
         for i in permutation:
             self.img_paths.append(path[i])
             self.labels.append(labels[i])
+
 
     def _parse_function_train(self, filename, label):
         """Input parser for samples of the training set."""
@@ -131,6 +135,7 @@ class ImageDataGenerator(object):
         img_bgr = img_centered[:, :, ::-1]
 
         return img_bgr, one_hot
+
 
     def _parse_function_inference(self, filename, label):
         """Input parser for samples of the validation/test set."""
