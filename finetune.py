@@ -20,6 +20,7 @@ validating.
 
 import os
 import numpy as np
+# -import tensorflow as tf
 import tensorflow.compat.v1 as tf
 tf.compat.v1.disable_eager_execution()
 
@@ -28,6 +29,8 @@ from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropou
 from datagenerator import ImageDataGenerator
 from datetime import datetime
 from tensorflow.python.data.util import nest
+# -from tensorflow.python.data.ops import iterator
+
 
 # Set up the GPU in the condition of allocation exceeds system memory with the reminding message: Could not 
 # create cuDNN handle... The following lines of code can avoids the sudden stop of the runtime. 
@@ -35,12 +38,11 @@ gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
 
-
 # 1.Configuration
 
 # Path to the textfiles for the trainings and validation set
-train_file = '/home/mic/Documents/finetune_alexnet_with_tf/train.txt'
-val_file = '/home/mic/Documents/finetune_alexnet_with_tf/val.txt'
+train_file = '/home/mike/Documents/finetune_alexnet_with_tf/train.txt'
+val_file = '/home/mike/Documents/finetune_alexnet_with_tf/val.txt'
 
 # Change the learning rate from 0.01 to 0.001 to erase the runtime error. 
 learning_rate = 0.001
@@ -56,8 +58,8 @@ train_layers = ['fc8', 'fc7', 'fc6']
 display_step = 20
 
 # Path for tf.summary.FileWriter and to store model checkpoints
-filewriter_path = '/home/mic/Documents/finetune_alexnet_with_tf/dogs_vs_cats'
-checkpoint_path = '/home/mic/Documents/finetune_alexnet_with_tf/'
+filewriter_path = '/home/mike/Documents/finetune_alexnet_with_tf/dogs_vs_cats'
+checkpoint_path = '/home/mike/Documents/finetune_alexnet_with_tf/'
 
 
 # 2.Finetuning Script.
