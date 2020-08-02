@@ -14,6 +14,7 @@ The editor has modified lines of code to be compaible with the environment of Te
 - CUDA 11.0
 - cuDNN 8.0.1
 - TensorFlow 2.0~2.2
+- Keras 2.4.3
 
 ## New Created Scripts
 
