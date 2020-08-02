@@ -39,6 +39,13 @@ According to the current trace report from CUPTI, it is only the error reminding
 https://docs.nvidia.com/cupti/Cupti/index.html
 
 
+## GPU Growth 
+
+After upgrading the system to CUDA 11.0/cuDNN 8.0.1, Nvidia Truing GPU allows to initiate the GPU growth model, i.e., boosting Deep Learning applications as soon as possible with the growing GPU Memory. The avantage is that the training is much faster than ever before. But the dsiavantage is that the system does not automatically or slowly remove the used GPU memory sometimes. It incurs the phenomenan: CUDA_ERROR_OUT_OF_MEMORY:out of memory. Users either wait for the system removal of the GPU memory or end the completed process(such as exit from Juputer Notebook or restart the computer). 
+
+
+
+
 # Finetune AlexNet with Tensorflow
 
 **Update 15.06.2016**
