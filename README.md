@@ -19,7 +19,7 @@ The editor has modified the lines of code to be compaible with the environment o
 
 ## New Created Scripts
 
-The original scripts do not inlcude both dataset-splitting and image-labelling functionalities. So it is not easy for fresh developers to understand and run the original scripts. Therefore, the editor writes both the scripts of dataset-splitting and image-labelling. It streamlines the finetune of the AlexNet model. 
+The original repo does not inlcude both dataset-splitting and image-labelling functionalities. So it is not easy for fresh developers to understand and run the original scripts. Therefore, the editor writes both the scripts of dataset-splitting and image-labelling. It streamlines the finetune of the AlexNet model. 
 
 ## Example train.txt:
 
