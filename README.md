@@ -10,6 +10,7 @@ The editor has modified lines of code to be compaible with the environment of Te
 
 - Miniconda 4.8.3 (or related Ananconda version) 
 - Python 3.7.7
+- CUDA Driver 450.57 ppa
 - CUDA 11.0
 - cuDNN 8.0.1
 - TensorFlow 2.0~2.2
